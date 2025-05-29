@@ -1,0 +1,16 @@
+x-restart-policy: &restart_policy
+  restart: unless-stopped
+  pull_policy: always
+services:
+  newsnow:
+    image: ghcr.io/ourongxing/newsnow:latest
+    container_name: newsnow
+    << : *restart_policy
+    ports:
+      - '4444:4444'
+    environment:
+      - G_CLIENT_ID=
+      - G_CLIENT_SECRET=
+      - JWT_SECRET=
+      - INIT_TABLE=true
+      - ENABLE_CACHE=true
