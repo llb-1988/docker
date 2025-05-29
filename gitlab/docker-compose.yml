@@ -1,0 +1,31 @@
+x-restart-policy: &restart_policy
+  restart: unless-stopped
+  pull_policy: always
+services:
+  gitlab:
+    container_name: 'gitlab'
+    image: 'gitlab/gitlab-ce:16.11.5-ce.0'
+    <<: *restart_policy
+    mem_limit: 8G
+    shm_size: 2G
+    hostname: 192.168.110.209:8000
+    environment:
+      TZ: 'Asia/Shanghai'
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://192.168.110.209:8000'
+        gitlab_rails["time_zone"] = 'Asia/Shanghai'
+        gitlab_rails['gitlab_ssh_host'] = '192.168.110.209'
+        gitlab_rails['gitlab_shell_ssh_port'] = 30022
+    ports:
+      - '8000:8000' # 注意宿主机和容器内部的端口要一致，否则external_url无法访问
+      - '30443:443'
+      - '30022:22'
+    volumes:
+      - './config:/etc/gitlab'
+      - './logs:/var/log/gitlab'
+      - './data:/var/opt/gitlab'
+    logging:
+      driver: json-file
+      options:
+        max-size: "1g"
+        max-file: "3"
