@@ -1,0 +1,17 @@
+x-restart-policy: &restart_policy
+  restart: unless-stopped
+volumes:
+  data:
+services:
+  open-webui:
+    container_name: 'open-webui'
+    image: ghcr.io/open-webui/open-webui:main
+    << : *restart_policy
+    volumes:
+      - data:/app/backend/data
+    ports:
+      - "8888:8080" # Open-WebUI port
+    environment:
+      TZ: Asia/Shanghai
+      OLLAMA_API_BASE: http://192.168.110.217:11434
+      OLLAMA_BASE_URL: http://192.168.110.217:11434
