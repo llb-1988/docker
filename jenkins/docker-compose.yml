@@ -1,0 +1,33 @@
+x-restart-policy: &restart_policy
+  restart: unless-stopped
+  pull_policy: always
+services:
+  jenkins:
+    # 镜像选择了 jdk17 最新版，可自行选择
+    image: jenkins/jenkins:jdk17
+    container_name: jenkins
+    # 重启策略：除非手动停止，否则出错会无限重启
+    << : *restart_policy
+    # 指定用户 uid:gid（`用户id`:`宿主机的docker组id`，跟文件权限有关）
+    user: root
+    privileged: true
+    ports:
+      # 8080 为 Jenkins 的 Web 端口
+      - 8001:8080
+      # 50000 为代理节点与主服务器的通信端口？
+      - 50000:50000
+    volumes:
+      # 同步宿主机的时间
+      - /etc/timezone:/etc/timezone
+      - /etc/localtime:/etc/localtime
+      # Jenkins 数据目录映射出来，方面操作和备份
+      - ./jenkins_home:/var/jenkins_home
+      # 把宿主机的 docker 和 docker-compose 给 Jenkins 使用，这样可以直接在 Jenkins 内部打镜像，并直接操作容器
+      - /usr/bin/docker:/usr/bin/docker
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/local/bin/docker-compose:/usr/local/bin/docker-compose
+    logging:
+      driver: json-file
+      options:
+        max-size: "1g"
+        max-file: "3"
