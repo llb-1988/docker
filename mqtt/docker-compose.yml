@@ -1,0 +1,16 @@
+x-restart-policy: &restart_policy
+  restart: unless-stopped
+  pull_policy: always
+services:
+  mosquitto:
+    container_name: 'mosquitto'
+    image: eclipse-mosquitto:latest
+    << : *restart_policy
+    mem_limit: 2G
+    ports:
+      - "1883:1883"  # HTTP
+      - "9001:9001"  # Bolt
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
