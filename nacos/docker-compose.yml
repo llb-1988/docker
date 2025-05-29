@@ -1,0 +1,34 @@
+x-restart-policy: &restart_policy
+  restart: unless-stopped
+  pull_policy: always
+services:
+  nacos:
+    container_name: 'nacos'
+    image: nacos/nacos-server:v2.3.2
+    << : *restart_policy
+    mem_limit: 3G
+    volumes:
+      - ./logs/:/home/nacos/logs
+      # - ./init.d/custom.properties:/home/nacos/init.d/custom.properties
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+      - "9849:8849"
+    environment:
+      TZ: Asia/Shanghai
+      MODE: standalone
+      SPRING_DATASOURCE_PLATFORM: mysql
+      # NACOS_SERVER_IP: $NACOS_SERVER_IP
+      # NACOS_APPLICATION_PORT: $NACOS_SERVER_PORT
+      MYSQL_SERVICE_HOST: $MYSQL_HOST
+      MYSQL_SERVICE_PORT: $MYSQL_PORT
+      MYSQL_SERVICE_DB_NAME: $MYSQL_NACOS_DB_NAME
+      MYSQL_SERVICE_USER: $MYSQL_NACOS_USER
+      MYSQL_SERVICE_PASSWORD: $MYSQL_NACOS_PASSWORD
+      MYSQL_SERVICE_DB_PARAM: $MYSQL_NACOS_DB_PARAM
+      # NACOS_AUTH_ENABLE: "true"
+    logging:
+      driver: json-file
+      options:
+        max-size: "1g"
+        max-file: "3"
