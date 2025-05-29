@@ -7,7 +7,7 @@ services:
     image: mysql:5.7
     <<: *restart_policy
     environment:
-      MYSQL_ROOT_PASSWORD: liangqing@365
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: mysql
       TZ: Asia/Shanghai
     ports:
