@@ -1,0 +1,22 @@
+x-restart-policy: &restart_policy
+  restart: unless-stopped
+  pull_policy: always
+services:
+  tensorflow:
+    image: tensorflow/tensorflow:latest
+    container_name: tensorflow
+    <<: *restart_policy
+    ports:
+      - '8888:8888'
+    volumes:
+      - ./notebooks:/tf/notebooks
+    # environment:
+    #   - NVIDIA_VISIBLE_DEVICES=all
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - capabilities: [gpu]
+
+volumes:
+  notebooks:
