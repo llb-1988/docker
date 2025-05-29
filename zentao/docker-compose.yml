@@ -1,0 +1,40 @@
+x-restart-policy: &restart_policy
+  restart: unless-stopped
+  pull_policy: always
+networks:
+  zentao-net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.8.0/24
+          gateway: 172.16.8.254
+services:
+  zentao:
+    image: hub.zentao.net/app/zentao:18.5
+    container_name: zentao
+    <<: *restart_policy
+    mem_limit: 4G
+    ports:
+      - '8090:80'
+    volumes:
+      - ./zbox:/opt/zbox
+      - ./data:/data
+    environment:
+      - MYSQL_INTERNAL=true
+      - PHP_MAX_EXECUTION_TIME=120
+      - PHP_MEMORY_LIMIT=512M
+      - PHP_POST_MAX_SIZE=128M
+      - PHP_UPLOAD_MAX_FILESIZE=128M
+    mac_address: 02:42:ac:11:00:ff
+    networks:
+      zentao-net:
+        ipv4_address: 172.16.8.8
+
+# 禅道无法启动：
+# 报错Mysql.sock已存在，删除mysql.lock
+# docker-compose exec zentao rm /opt/zbox/tmp/mysql/mysql.sock
+
+# 报错httpd alreay running，删除httpd.pid
+# docker-compose exec zentao rm /opt/zbox/tmp/apache/httpd.pid
+
