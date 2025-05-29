@@ -1,0 +1,26 @@
+x-restart-policy: &restart_policy
+  restart: unless-stopped
+  pull_policy: always
+services:
+  mysql:
+    container_name: 'mysql'
+    image: mysql:5.7
+    <<: *restart_policy
+    environment:
+      MYSQL_ROOT_PASSWORD: liangqing@365
+      MYSQL_DATABASE: mysql
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mydir:/mydir
+      - ./data:/var/lib/mysql
+      - ./conf:/etc/mysql/mysql.conf.d
+      - ./log:/var/log/mysql:rw
+      # 数据库还原目录 可将需要还原的sql文件放在这里
+      - ./source:/docker-entrypoint-initdb.d
+    logging:
+      driver: json-file
+      options:
+        max-size: "1g"
+        max-file: "3"
