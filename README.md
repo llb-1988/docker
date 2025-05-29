@@ -1,7 +1,7 @@
 # docker
 docker-compose学习，并整理一些自己常用的docker-compose脚本文件
 
-docker-compose 安装及设置命令，懒得用 docker compose
+docker-compose 安装及设置命令，基于Ubuntu，懒得用 docker compose
 ```
 sudo apt update
 
