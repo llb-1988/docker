@@ -1,0 +1,31 @@
+x-restart-policy: &restart_policy
+  restart: unless-stopped
+  pull_policy: always
+services:
+  gitea:
+    image: gitea/gitea:latest
+    container_name: "gitea"
+    <<: *restart_policy
+    volumes:
+      - ./gitea_data:/var/lib/gitea
+      - ./gitea_config:/etc/gitea
+    ports:
+      - "3000:3000"
+      - "2222:22" # For SSH if needed
+    environment:
+      - DB_TYPE=postgres
+      - DB_HOST=db:5432
+      - DB_NAME=gitea
+      - DB_USER=gitea
+      - DB_PASS=gitea # Replace with a strong password
+    depends_on:
+      - db
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=gitea
+      - POSTGRES_PASSWORD=gitea # Replace with a strong password
+      - POSTGRES_DB=gitea
+    volumes:
+      - ./pg_data:/var/lib/postgresql/data
