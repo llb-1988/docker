@@ -1,0 +1,21 @@
+x-restart-policy: &restart_policy
+  restart: unless-stopped
+  pull_policy: always
+services:
+  pgsql:
+    container_name: 'pgsql'
+    image: bitnami/postgresql:latest
+    <<: *restart_policy
+    environment:
+      TZ: Asia/Shanghai
+      POSTGRES_USER: postgres         # 设置数据库用户名
+      POSTGRES_PASSWORD: postgres # 设置数据库密码
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data  # 持久化数据卷
+    logging:
+      driver: json-file
+      options:
+        max-size: "1g"
+        max-file: "3"
